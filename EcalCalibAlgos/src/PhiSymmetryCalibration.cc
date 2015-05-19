@@ -21,6 +21,7 @@
 #include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Calibration/Tools/interface/EcalRingCalibrationTools.h"
 
 //Channel status
 #include "CondFormats/EcalObjects/interface/EcalChannelStatus.h"
@@ -62,8 +63,9 @@ PhiSymmetryCalibration::PhiSymmetryCalibration(const edm::ParameterSet& iConfig)
   barrelHits_( iConfig.getParameter< std::string > ("barrelHitCollection")),
   endcapHits_( iConfig.getParameter< std::string > ("endcapHitCollection")),
   eCut_barl_( iConfig.getParameter< double > ("eCut_barrel") ),
-  ap_( iConfig.getParameter<double> ("ap") ),
-  b_( iConfig.getParameter<double> ("b") ), 
+  //ap_( iConfig.getParameter<double> ("ap") ),
+  //b_( iConfig.getParameter<double> ("b") ), 
+  nNoise_( iConfig.getParameter<double> ("nNoise") ),
   eventSet_( iConfig.getParameter< int > ("eventSet") ),
   statusThreshold_(iConfig.getUntrackedParameter<int>("statusThreshold",3)),
   reiteration_(iConfig.getUntrackedParameter< bool > ("reiteration",false)),
@@ -297,7 +299,6 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
   if (!endcapRecHitsHandle.isValid()) {
     LogError("") << "[PhiSymmetryCalibration] Error! Can't get product!" << std::endl;
   }
-  
  
   // get the ecal geometry
   edm::ESHandle<CaloGeometry> geoHandle;
@@ -368,6 +369,11 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
     }//if eventSet_==1
   }//for barl
 
+  //Get iRing-geometry 
+  edm::ESHandle<CaloGeometry> geoHandle;
+  setup.get<CaloGeometryRecord>().get(geoHandle);
+  EcalRingCalibrationTools::setCaloGeometry(&(*geoHandle)); 
+  EcalRingCalibrationTools CalibRing; 
 
   // select interesting EcalRecHits (endcaps)
   EERecHitCollection::const_iterator ite;
@@ -378,6 +384,8 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
 
     float et = ite->energy()/cosh(eta);
     float e  = ite->energy();
+
+    int iRing = CalibRing.getRingIndex(hit); 
 
     // if iterating, multiply by the previous correction factor
     if (reiteration_) {
@@ -391,13 +399,18 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
     // changes of eCut_endc_ -> variable linearthr 
     // e_cut = ap + eta_ring*b
 
-    double eCut_endc=0;
+    //double eCut_endc=0;
+    double eCut_endcP=0;
+    double eCut_endcM=0;
+
     for (int ring=0; ring<kEndcEtaRings; ring++) {
 
       if(eta>e_.etaBoundary_[ring] && eta<e_.etaBoundary_[ring+1])
 	{  
 	  float eta_ring= abs(e_.cellPos_[ring][50].eta())  ;
-	  eCut_endc = ap_ + eta_ring*b_;
+	  //eCut_endc = ap_ + eta_ring*b_;
+    eCut_endcP = 2*nNoise_*(72.92+(3.549*iRing)+(0.2262*iRing^2))/1000
+    eCut_endcM = 2*nNoise_*(79.29+(4.148*iRing)+(0.2442*iRing^2))/1000
 
 	}
     }
