@@ -399,9 +399,7 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
     // changes of eCut_endc_ -> variable linearthr 
     // e_cut = ap + eta_ring*b
 
-    //double eCut_endc=0;
-    double eCut_endcP=0;
-    double eCut_endcM=0;
+    double eCut_endc=0;
 
     for (int ring=0; ring<kEndcEtaRings; ring++) {
 
@@ -409,8 +407,8 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
 	{  
 	  float eta_ring= abs(e_.cellPos_[ring][50].eta())  ;
 	  //eCut_endc = ap_ + eta_ring*b_;
-    eCut_endcP = 2*nNoise_*(72.92+(3.549*iRing)+(0.2262*iRing^2))/1000
-    eCut_endcM = 2*nNoise_*(79.29+(4.148*iRing)+(0.2442*iRing^2))/1000
+    if(hit.zside>0) eCut_endc = 2*nNoise_*(72.92+(3.549*iRing)+(0.2262*iRing^2))/1000;
+    if(hit.zside<0) eCut_endc = 2*nNoise_*(79.29+(4.148*iRing)+(0.2442*iRing^2))/1000;
 
 	}
     }
