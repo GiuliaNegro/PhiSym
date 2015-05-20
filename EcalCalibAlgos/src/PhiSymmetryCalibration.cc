@@ -63,8 +63,8 @@ PhiSymmetryCalibration::PhiSymmetryCalibration(const edm::ParameterSet& iConfig)
   barrelHits_( iConfig.getParameter< std::string > ("barrelHitCollection")),
   endcapHits_( iConfig.getParameter< std::string > ("endcapHitCollection")),
   eCut_barl_( iConfig.getParameter< double > ("eCut_barrel") ),
-  //ap_( iConfig.getParameter<double> ("ap") ),
-  //b_( iConfig.getParameter<double> ("b") ), 
+  ap_( iConfig.getParameter<double> ("ap") ),
+  b_( iConfig.getParameter<double> ("b") ), 
   nNoise_( iConfig.getParameter<double> ("nNoise") ),
   eventSet_( iConfig.getParameter< int > ("eventSet") ),
   statusThreshold_(iConfig.getUntrackedParameter<int>("statusThreshold",3)),
@@ -370,8 +370,8 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
   }//for barl
 
   //Get iRing-geometry 
-  edm::ESHandle<CaloGeometry> geoHandle;
-  setup.get<CaloGeometryRecord>().get(geoHandle);
+  //edm::ESHandle<CaloGeometry> geoHandle;
+  //setup.get<CaloGeometryRecord>().get(geoHandle);
   EcalRingCalibrationTools::setCaloGeometry(&(*geoHandle)); 
   EcalRingCalibrationTools CalibRing; 
 
@@ -386,6 +386,8 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
     float e  = ite->energy();
 
     int iRing = CalibRing.getRingIndex(hit); 
+
+   	cout << "ring number: " << iRing << endl;
 
     // if iterating, multiply by the previous correction factor
     if (reiteration_) {
@@ -405,10 +407,10 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
 
       if(eta>e_.etaBoundary_[ring] && eta<e_.etaBoundary_[ring+1])
 	{  
-	  float eta_ring= abs(e_.cellPos_[ring][50].eta())  ;
+	  //float eta_ring= abs(e_.cellPos_[ring][50].eta())  ;
 	  //eCut_endc = ap_ + eta_ring*b_;
-    if(hit.zside>0) eCut_endc = 2*nNoise_*(72.92+(3.549*iRing)+(0.2262*iRing^2))/1000;
-    if(hit.zside<0) eCut_endc = 2*nNoise_*(79.29+(4.148*iRing)+(0.2442*iRing^2))/1000;
+      if(hit.zside()>0) eCut_endc = 2*nNoise_*(72.92+(3.549*iRing)+(0.2262*iRing*iRing))/1000;
+      if(hit.zside()<0) eCut_endc = 2*nNoise_*(79.29+(4.148*iRing)+(0.2442*iRing*iRing))/1000;
 
 	}
     }
