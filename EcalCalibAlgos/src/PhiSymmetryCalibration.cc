@@ -385,10 +385,11 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
     float et = ite->energy()/cosh(eta);
     float e  = ite->energy();
 
-    int iRingEEM = CalibRing.getRingIndex(hit) - EcalRingCalibrationTools::N_RING_BARREL; 
-    int iRingEEP = iRingEEM - EcalRingCalibrationTools::N_RING_ENDCAP/2;
+	int iRing = 0;
+	if(hit.zside()<0) iRing = CalibRing.getRingIndex(hit) - EcalRingCalibrationTools::N_RING_BARREL;
+	else iRing = CalibRing.getRingIndex(hit) - EcalRingCalibrationTools::N_RING_BARREL - EcalRingCalibrationTools::N_RING_ENDCAP/2;
 
-   	cout << "EEM ring number: " << iRingEEM << ", EEP ring number: " << iRingEEP << endl;
+   	cout << "ring number: " << iRing << endl;
 
     // if iterating, multiply by the previous correction factor
     if (reiteration_) {
@@ -410,8 +411,8 @@ void PhiSymmetryCalibration::analyze( const edm::Event& event, const edm::EventS
 	{  
 	  //float eta_ring= abs(e_.cellPos_[ring][50].eta())  ;
 	  //eCut_endc = ap_ + eta_ring*b_;
-      if(hit.zside()>0) eCut_endc = 2*nNoise_*(72.92+(3.549*iRingEEP)+(0.2262*iRingEEP*iRingEEP))/1000;
-      if(hit.zside()<0) eCut_endc = 2*nNoise_*(79.29+(4.148*iRingEEM)+(0.2442*iRingEEM*iRingEEM))/1000;
+      if(hit.zside()>0) eCut_endc = 2*nNoise_*(72.92+(3.549*iRing)+(0.2262*iRing*iRing))/1000;
+      if(hit.zside()<0) eCut_endc = 2*nNoise_*(79.29+(4.148*iRing)+(0.2442*iRing*iRing))/1000;
 
 	}
     }
