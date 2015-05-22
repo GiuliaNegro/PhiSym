@@ -32,7 +32,9 @@ process.maxEvents = cms.untracked.PSet(
 
 isStream=False
 runMultiFit=True
-isBX50ns=False
+#runMultiFit=False
+#isBX50ns=False
+isBX50ns=True
 
 if (runMultiFit):
     if (isBX50ns):
@@ -74,9 +76,13 @@ process.phisymcalib = cms.EDAnalyzer("PhiSymmetryCalibration",
                                      endcapHitCollection = cms.string("EcalRecHitsEE"),
                                      #eCut_barrel = cms.double(0.550),                                              
                                      eCut_barrel = cms.double(1.3*10.*0.04),
+                                     #eCut_barrel = cms.double(1.3*9.*0.04),
+                                     #eCut_barrel = cms.double(1.3*8.*0.04),
                                      ap = cms.double( -0.150),
                                      b  = cms.double(  0.600),
                                      nNoise = cms.double(10.),
+                                     #nNoise = cms.double(9.),
+                                     #nNoise = cms.double(8.),
                                      eventSet = cms.int32(1),
                                      statusThreshold = cms.untracked.int32(0)
                                      )

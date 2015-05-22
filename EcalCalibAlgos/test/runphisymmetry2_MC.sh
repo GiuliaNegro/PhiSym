@@ -16,11 +16,12 @@ datadir=$CMSSW_BASE/src/PhiSym/EcalCalibAlgos/data
 step2out="CalibHistos.root ehistos.root etsumMean_barl.dat etsumMean_endc.dat PhiSymmetryCalibration_miscal_resid.root PhiSymmetryCalibration.root etsummary_barl.dat etsummary_endc.dat" 
 
 usage(){
-    echo "$0 mode dataset globaltag "
+    echo "$0 mode dataset globaltag reco nNoise"
     exit
 }
 
-if [ $# -ne 3 ] 
+#if [ $# -ne 3 ] n° argomenti non equal to 3
+if [ $# -ne 5 ]
 then
     usage
 fi
@@ -34,15 +35,17 @@ fi
 dataset=$1
 globaltag=$2
 mode=$3
+reco=$4
+nNoise=$5
 
 . phisym-functions.sh
 
 # setup job
 echo "$0: Setting up job"
-echo "./makephisym2_MC.py --mode=$mode --dataset=$dataset --globaltag=$globaltag" 
+echo "./makephisym2_MC.py --mode=$mode --dataset=$dataset --globaltag=$globaltag --reco=$reco --nNoise=$nNoise" 
 
 
-./makephisym2_MC.py --mode=$mode --dataset=$dataset --globaltag="$globaltag"
+./makephisym2_MC.py --mode=$mode --dataset=$dataset --globaltag="$globaltag" --reco=$reco --nNoise=$nNoise
 
 if [ $? -eq 1 ] ; then
    echo "$0 : Got an error from makephisym , exiting" 
@@ -51,8 +54,22 @@ fi
 
 
 #cd into last made dir .. ok think of something smarter
-rundir="$dataset"
-rundir=`echo $rundir | sed s-/-_-g | sed 's/.\(.*\)/\1/'`
+#rundir="$dataset"
+#rundir=`echo $rundir | sed s-/-_-g | sed 's/.\(.*\)/\1/'`
+
+#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_MultiFit_noise9"
+#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_MultiFit_noise8"
+#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_Weights_noise8"
+#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_Weights_noise9"
+#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_Weights_noise10"
+
+#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_Weights_noise10'
+#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_Weights_noise9'
+#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_Weights_noise8'
+#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_MultiFit_noise8'
+#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_MultiFit_noise9'
+rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_MultiFit_noise10'
+
 echo "$0 : Running dir is $rundir"
 cd  $rundir
 

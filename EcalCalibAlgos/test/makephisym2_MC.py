@@ -22,10 +22,10 @@ import string, sys, os, getopt, subprocess, time, shutil
 
 def usage():
     print "Usage: makephisym2_MC.py --mode=[caf|grid|crab3] --dataset=[datasetname]"
-    print "       --globaltag=[tag] [--step2only]"
+    print "       --globaltag=[tag] --reco=[recoMethod] --nNoise=[noiseNumber] [--step2only]"     #reco=MultiFit/Weights, nNoise=8/9/10
     
 try:
-     opts, args = getopt.getopt(sys.argv[1:], "m:d:g:s", ["mode=","dataset=","globaltag=","step2only"])
+     opts, args = getopt.getopt(sys.argv[1:], "m:d:g:r:n:s", ["mode=","dataset=","globaltag=","reco=","nNoise=","step2only"])
 
 except getopt.GetoptError:
      #* print help information and exit:*
@@ -36,6 +36,8 @@ except getopt.GetoptError:
 mode=''
 dataset=''
 globaltag=''
+reco=''
+nNoise=''
 step2only=0
 
 cmssw_py_template=   'phisym-cfg.py.tmpl'
@@ -62,6 +64,12 @@ for opt, arg in opts:
      if opt in ("-g","--globaltag"):
          globaltag=arg
 
+     if opt in ("-r","--reco"):
+      reco=arg
+
+     if opt in ("-n","--nNoise"):
+      nNoise=arg
+
      if opt in ("-s","--step2only"):
          step2only=1
 
@@ -71,11 +79,21 @@ if dataset=='':
     print "Please specify dataset"
     sys.exit(2)
 
-
 if mode=='':    
     usage()
     print "Please specify mode caf, glite or crab3"
     sys.exit(2)
+
+if reco=='':
+    usage()
+    print "Please specify reco"
+    sys.exit(2)
+
+if nNoise=='':
+    usage()
+    print "Please specify nNoise"
+    sys.exit(2)
+
         
 print "Querying DBS ..."
 
@@ -127,7 +145,7 @@ outfile = open('phisym-cfg.py',"w")
 outfile.write(data)
 outfile.close()
 
-friendly_datasetname=dataset.replace('/','_')
+friendly_datasetname=dataset.replace('/','_')+'_'+reco+'_noise'+nNoise
 dirname=friendly_datasetname[1:]
 
 if not step2only:
