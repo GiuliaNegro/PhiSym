@@ -20,7 +20,6 @@ usage(){
     exit
 }
 
-#if [ $# -ne 3 ] n° argomenti non equal to 3
 if [ $# -ne 5 ]
 then
     usage
@@ -53,22 +52,9 @@ if [ $? -eq 1 ] ; then
 fi
 
 
-#cd into last made dir .. ok think of something smarter
-#rundir="$dataset"
-#rundir=`echo $rundir | sed s-/-_-g | sed 's/.\(.*\)/\1/'`
-
-#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_MultiFit_noise9"
-#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_MultiFit_noise8"
-#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_Weights_noise8"
-#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_Weights_noise9"
-#rundir="Neutrino_Pt-2to20_gun_Fall13dr-tsg_PU40bx25_POSTLS162_V2-v1_GEN-SIM-RAW_Weights_noise10"
-
-#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_Weights_noise10'
-#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_Weights_noise9'
-#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_Weights_noise8'
-#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_MultiFit_noise8'
-#rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_MultiFit_noise9'
-rundir='Neutrino_Pt-2to20_gun_Spring14dr-PU20bx50_POSTLS170_V6-v1_GEN-SIM-RAW_MultiFit_noise10'
+#cd into last made dir
+rundir="$dataset""_$4""_noise$5" 
+rundir=`echo $rundir | sed s-/-_-g | sed 's/.\(.*\)/\1/'` 
 
 echo "$0 : Running dir is $rundir"
 cd  $rundir

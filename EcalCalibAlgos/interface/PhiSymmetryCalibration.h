@@ -129,9 +129,7 @@ class PhiSymmetryCalibration :  public edm::EDAnalyzer
   double eCut_barl_;
   
 
-  // parametrized energy cut EE : e_cut = ap + eta_ring*b
-  double ap_;
-  double b_;
+  // parametrized energy cut EE 
   double nNoise_;
 
   int eventSet_;

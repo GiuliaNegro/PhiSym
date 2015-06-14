@@ -28,6 +28,15 @@ process.source = cms.Source("PoolSource",
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 # Global Tag
 process.GlobalTag.globaltag = 'GLOBALTAG'
+
+process.GlobalTag.toGet = cms.VPSet(
+       
+    cms.PSet(record = cms.string("EcalChannelStatusRcd"),
+             tag = cms.string("EcalChannelStatus_start2014_mc"),
+             connect = cms.untracked.string("frontier://FrontierProd/CMS_COND_31X_ECAL") 
+             ),
+)
+
 process.phisymcalib = cms.EDAnalyzer("PhiSymmetryCalibration_step2",
                                       
     #channel statuses to be excluded                                  

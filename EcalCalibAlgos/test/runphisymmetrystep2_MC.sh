@@ -15,11 +15,11 @@ datadir=$CMSSW_BASE/src/PhiSym/EcalCalibAlgos/data
 step2out="CalibHistos.root ehistos.root etsumMean_barl.dat etsumMean_endc.dat PhiSymmetryCalibration_miscal_resid.root PhiSymmetryCalibration.root etsummary_barl.dat etsummary_endc.dat" 
 
 usage(){
-    echo "$0 mode dataset globaltag"
+    echo "$0 mode dataset globaltag reco nNoise"
     exit
 }
 
-if [ $# -ne 3 ] 
+if [ $# -ne 5 ] 
 then
     usage
 fi
@@ -27,12 +27,15 @@ fi
 dataset=$1
 globaltag=$2
 mode=$3
+reco=$4
+nNoise=$5
 
 . phisym-functions.sh
 
 #cd into last made dir .. ok think of something smarter
-rundir="$dataset"
-rundir=`echo $rundir | sed s-/-_-g | sed 's/.\(.*\)/\1/'`
+rundir="$dataset""_$4""_noise$5" 
+rundir=`echo $rundir | sed s-/-_-g | sed 's/.\(.*\)/\1/'` 
+
 echo "$0 : Running dir is $rundir"
 cd  $rundir
 
